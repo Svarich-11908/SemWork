@@ -2,7 +2,6 @@ package ru.itis.servlets;
 
 import ru.itis.services.PhotoService;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,27 +16,30 @@ import java.io.IOException;
 @MultipartConfig
 public class GalleryServlet extends HttpServlet {
 
-    private PhotoService photoService;
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext context = config.getServletContext();
-        this.photoService = (PhotoService) context.getAttribute("photoService");
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("photos", photoService.getGallery());
-        req.getRequestDispatcher("/jsp/gallery.jsp").forward(req, resp);
+        ServletContext context = req.getServletContext();
+        try {
+            PhotoService photoService = (PhotoService) context.getAttribute("photoService");
+            req.setAttribute("photos", photoService.getGallery());
+            req.getRequestDispatcher("/jsp/gallery.jsp").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            context.log(e.getMessage());
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("1");
-        Part part = req.getPart("file");
-        if (part.getContentType().contains("image")) {
-            photoService.upload(part.getInputStream(), part.getSubmittedFileName());
+        ServletContext context = req.getServletContext();
+        try {
+            PhotoService photoService = (PhotoService) context.getAttribute("photoService");
+            Part part = req.getPart("file");
+            if (part.getContentType().contains("image")) {
+                photoService.upload(part.getInputStream(), part.getSubmittedFileName());
+            }
+            resp.sendRedirect("/gallery");
+        } catch (ServletException | IOException e) {
+            context.log(e.getMessage());
         }
-        resp.sendRedirect("/gallery");
     }
 }

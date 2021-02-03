@@ -11,7 +11,7 @@ import java.util.List;
 public class MovieRepository extends AbstractCrudRepository<Movie>{
 
     private static final String TABLE_NAME = "movies";
-    private static final RowMapper<Movie> rowMapper = (row, rowNumber) -> new Movie(
+    private static final RowMapper<Movie> MOVIE_ROW_MAPPER = (row, rowNumber) -> new Movie(
             row.getLong("id"),
             row.getString("title"),
             row.getString("description"),
@@ -26,7 +26,7 @@ public class MovieRepository extends AbstractCrudRepository<Movie>{
     private static final String UPDATE = "update movies set title = ?, description = ?, director_id = ?, length = ?, year = ?, picture_path = ? where id = ?";
 
     public MovieRepository(DataSource dataSource) {
-        super(TABLE_NAME, rowMapper, new JdbcTemplate(dataSource));
+        super(TABLE_NAME, MOVIE_ROW_MAPPER, new JdbcTemplate(dataSource));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MovieRepository extends AbstractCrudRepository<Movie>{
         try {
             return super.findAllByField(Movie.class.getDeclaredField("directorId"), id, "director_id");
         } catch (NoSuchFieldException e) {
-            return new LinkedList<Movie>();
+            return new LinkedList<>();
         }
     }
 

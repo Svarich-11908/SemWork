@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class MovieServiceImpl implements MovieService {
 
+    private static final String LINK_PREFIX = "/movie?id=";
+
     private MovieRepository movieRepository;
 
     public MovieServiceImpl(MovieRepository movieRepository) {
@@ -24,21 +26,21 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<MovieDto> getByDirectorId(Long id) {
         return movieRepository.findByDirectorId(id).stream()
-                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", "/movie?id=" + x.getId()))
+                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", LINK_PREFIX + x.getId()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<MovieDto> getList() {
         return movieRepository.findAll().stream()
-                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", "/movie?id=" + x.getId()))
+                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", LINK_PREFIX + x.getId()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<MovieDto> getMatching(String sub) {
         return movieRepository.findAll().stream()
-                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", "/movie?id=" + x.getId()))
+                .map(x -> new MovieDto(x.getTitle() + " (" + x.getYear() + ")", LINK_PREFIX + x.getId()))
                 .filter(x -> x.getTitle().toLowerCase().contains(sub.toLowerCase()))
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,5 @@
 package ru.itis.models;
 
-import java.util.List;
-
 public class User {
     private Long id;
     private String email;

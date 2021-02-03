@@ -4,7 +4,6 @@ import ru.itis.models.Director;
 import ru.itis.services.DirectorService;
 import ru.itis.services.MovieService;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,24 +16,18 @@ import java.util.Optional;
 @WebServlet("/director")
 public class DirectorPageServlet extends HttpServlet {
 
-    private MovieService movieService;
-    private DirectorService directorService;
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext context = config.getServletContext();
-        this.movieService = (MovieService) context.getAttribute("movieService");
-        this.directorService = (DirectorService) context.getAttribute("directorService");
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext context = req.getServletContext();
+        String redirectPath = (String) context.getAttribute("directorCardRedirect");
         try {
-            if (req.getParameter("id") == null) resp.sendRedirect("/directors");
+            MovieService movieService = (MovieService) context.getAttribute("movieService");
+            DirectorService directorService = (DirectorService) context.getAttribute("directorService");
+            if (req.getParameter("id") == null) resp.sendRedirect(redirectPath);
             else {
                 Long id = Long.parseLong(req.getParameter("id"));
                 Optional<Director> director = directorService.getFullDirectorById(id);
-                if (!director.isPresent()) resp.sendRedirect("/directors");
+                if (!director.isPresent()) resp.sendRedirect(redirectPath);
                 else {
                     Director d = director.get();
                     req.setAttribute("director", d);
@@ -43,7 +36,13 @@ public class DirectorPageServlet extends HttpServlet {
                 }
             }
         } catch (NumberFormatException e) {
-            resp.sendRedirect("/directors");
+            try {
+                resp.sendRedirect(redirectPath);
+            } catch (IOException err) {
+                context.log(err.getMessage());
+            }
+        } catch (IOException | ServletException e) {
+            context.log(e.getMessage());
         }
     }
 }

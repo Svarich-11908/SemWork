@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Gallery</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -59,7 +60,7 @@
         </form>
 
         <c:forEach items="${photos}" var="photo">
-            <img src="${photo}" style="border: 1px solid #ddd; border-radius: 4px; padding: 5px; max-height: 500px; max-width: 500px;">
+            <img src="${photo}" alt="Picture" style="border: 1px solid #ddd; border-radius: 4px; padding: 5px; max-height: 500px; max-width: 500px;">
         </c:forEach>
     </div>
 </div>

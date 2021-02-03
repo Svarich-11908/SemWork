@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.repostories.*;
 import ru.itis.services.*;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -35,7 +34,6 @@ public class MyServletListener implements ServletContextListener {
 
         //encoders
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        BASE64Encoder fileEncoder = new BASE64Encoder();
 
         //repositories
         UserRepository userRepository = new UserRepository(dataSource);
@@ -51,7 +49,7 @@ public class MyServletListener implements ServletContextListener {
         UserService userService = new UserServiceImpl(userRepository, sessionRepository, favouriteRepository, movieRepository);
         LogoutService logoutService = new LogoutServiceImpl(sessionRepository);
         MovieService movieService = new MovieServiceImpl(movieRepository);
-        PhotoService photoService = new PhotoServiceImpl(fileEncoder, galleryRepository);
+        PhotoService photoService = new PhotoServiceImpl(galleryRepository);
         DirectorService directorService = new DirectorServiceImpl(directorRepository);
         FavouriteService favouriteService = new FavouriteServiceImpl(favouriteRepository);
 
@@ -65,10 +63,15 @@ public class MyServletListener implements ServletContextListener {
         servletContext.setAttribute("photoService", photoService);
         servletContext.setAttribute("directorService", directorService);
         servletContext.setAttribute("favouriteService", favouriteService);
+
+        //adding URIs to context
+        servletContext.setAttribute("directorCardRedirect", "/directors");
+        servletContext.setAttribute("movieCardRedirect", "/movies");
+        servletContext.setAttribute("loginPagePath", "/jsp/user_form.jsp");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-
+        //actions when context is destroyed
     }
 }

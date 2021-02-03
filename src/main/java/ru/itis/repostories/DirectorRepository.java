@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 public class DirectorRepository extends AbstractCrudRepository<Director>{
 
     private static final String TABLE_NAME = "directors";
-    private static final RowMapper<Director> rowMapper = (row, rowNumber) -> new Director(
+    private static final RowMapper<Director> DIRECTOR_ROW_MAPPER = (row, rowNumber) -> new Director(
             row.getLong("id"),
             row.getString("name"),
             row.getString("picture_path"));
@@ -20,7 +20,7 @@ public class DirectorRepository extends AbstractCrudRepository<Director>{
     private static final String UPDATE = "update directors set name = ?, picture_path = ? where id = ?";
 
     public DirectorRepository(DataSource dataSource) {
-        super(TABLE_NAME, rowMapper, new JdbcTemplate(dataSource));
+        super(TABLE_NAME, DIRECTOR_ROW_MAPPER, new JdbcTemplate(dataSource));
     }
 
     @Override

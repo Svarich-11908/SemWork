@@ -17,13 +17,13 @@ public abstract class AbstractDependencyRepository implements DependencyReposito
     //language=sql
     private static String getList = "select $ from & where % = ?";
 
-    public AbstractDependencyRepository(String tableName, String firstRowName, String secondRowName, JdbcTemplate jdbcTemplate) {
+    protected AbstractDependencyRepository(String tableName, String firstRowName, String secondRowName, JdbcTemplate jdbcTemplate) {
         this.tableName = tableName;
         this.firstRowName = firstRowName;
         this.secondRowName = secondRowName;
         this.jdbcTemplate = jdbcTemplate;
 
-        rowMapper = (row, rowNumber) -> new Long(row.getLong(1));
+        rowMapper = (row, rowNumber) -> Long.valueOf(row.getLong(1));
     }
 
     @Override

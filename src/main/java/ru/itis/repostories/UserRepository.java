@@ -11,7 +11,7 @@ import java.util.Optional;
 public class UserRepository extends AbstractCrudRepository<User>{
 
     private static final String TABLE_NAME = "users";
-    private static final RowMapper<User> rowMapper = (row, rowNumber) -> new User(
+    private static final RowMapper<User> USER_ROW_MAPPER = (row, rowNumber) -> new User(
             row.getLong("id"),
             row.getString("email"),
             row.getString("hash_password"));
@@ -22,7 +22,7 @@ public class UserRepository extends AbstractCrudRepository<User>{
     private static final String UPDATE = "update users set email = ?, hash_password = ? where id = ?";
 
     public UserRepository(DataSource dataSource) {
-        super(TABLE_NAME, rowMapper, new JdbcTemplate(dataSource));
+        super(TABLE_NAME, USER_ROW_MAPPER, new JdbcTemplate(dataSource));
     }
 
     @Override

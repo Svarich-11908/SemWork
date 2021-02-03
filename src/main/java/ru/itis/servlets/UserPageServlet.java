@@ -29,6 +29,7 @@ public class UserPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext context = req.getServletContext();
         Long id = (Long) req.getSession().getAttribute("userId");
         Boolean isProfile = true;
         try {
@@ -37,25 +38,35 @@ public class UserPageServlet extends HttpServlet {
                 isProfile = false;
             }
         } catch (NumberFormatException e) {
+            context.log(e.getMessage());
         } finally {
-            Optional<UserDto> udto = userService.getUserById(id);
-            if (udto.isPresent()) {
-                UserDto user = udto.get();
-                req.setAttribute("email", user.getEmail());
-                req.setAttribute("link", "/user?id=" + user.getId());
-                req.setAttribute("movies", user.getFavourites());
-                req.setAttribute("isProfile", isProfile);
+            try {
+                Optional<UserDto> udto = userService.getUserById(id);
+                if (udto.isPresent()) {
+                    UserDto user = udto.get();
+                    req.setAttribute("email", user.getEmail());
+                    req.setAttribute("link", "/user?id=" + user.getId());
+                    req.setAttribute("movies", user.getFavourites());
+                    req.setAttribute("isProfile", isProfile);
 
-                req.getRequestDispatcher("/jsp/user.jsp").forward(req, resp);
-            } else {
-                resp.sendRedirect("/user");
+                    req.getRequestDispatcher("/jsp/user.jsp").forward(req, resp);
+                } else {
+                    resp.sendRedirect("/user");
+                }
+            } catch (ServletException | IOException e) {
+                context.log(e.getMessage());
             }
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.addCookie(logoutService.logout(req.getSession()));
-        resp.sendRedirect("/home");
+        ServletContext context = req.getServletContext();
+        try {
+            resp.addCookie(logoutService.logout(req.getSession()));
+            resp.sendRedirect("/home");
+        } catch (IOException e) {
+            context.log(e.getMessage());
+        }
     }
 }

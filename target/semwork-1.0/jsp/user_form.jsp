@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Log In</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -73,10 +74,10 @@
                 </div>
             </form>
             <div class="col-md-auto">
-                </ul>
-                <c:forEach items="${errors}" var="error">
-                    <li>${error.getMessage()}</li>
-                </c:forEach>
+                <ul>
+                    <c:forEach items="${errors}" var="error">
+                        <li>${error.getMessage()}</li>
+                    </c:forEach>
                 </ul>
             </div>
     </div>

@@ -11,7 +11,7 @@ import java.util.Optional;
 public class SessionRepository extends AbstractCrudRepository<Session>{
 
     private static final String TABLE_NAME = "sessions";
-    private static final RowMapper<Session> rowMapper = (row, rowNumber) -> new Session(
+    private static final RowMapper<Session> SESSION_ROW_MAPPER = (row, rowNumber) -> new Session(
             row.getLong("id"),
             row.getString("session_id"),
             row.getLong("user_id"));
@@ -22,7 +22,7 @@ public class SessionRepository extends AbstractCrudRepository<Session>{
     private static final String UPDATE = "update sessions set session_id = ?, user_id = ? where id = ?";
 
     public SessionRepository(DataSource dataSource) {
-        super(TABLE_NAME, rowMapper, new JdbcTemplate(dataSource));
+        super(TABLE_NAME, SESSION_ROW_MAPPER, new JdbcTemplate(dataSource));
     }
 
     @Override

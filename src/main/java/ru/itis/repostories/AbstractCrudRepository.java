@@ -23,7 +23,7 @@ public abstract class AbstractCrudRepository<T> implements CrudRepository<T> {
     //language=SQL
     private static String deleteById = "delete from & where id = ?";
 
-    public AbstractCrudRepository(String tableName, RowMapper<T> rowMapper, JdbcTemplate jdbcTemplate) {
+    protected AbstractCrudRepository(String tableName, RowMapper<T> rowMapper, JdbcTemplate jdbcTemplate) {
         this.tableName = tableName;
         this.rowMapper = rowMapper;
         this.jdbcTemplate = jdbcTemplate;

@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public class LoginServiceImpl implements LoginService {
 
+    private static final String COOKIE_NAME = "sessionId";
+
     private UserRepository usersRepository;
     private PasswordEncoder passwordEncoder;
     private SessionRepository sessionRepository;
@@ -31,16 +33,16 @@ public class LoginServiceImpl implements LoginService {
             if (passwordEncoder.matches(form.getPassword(), user.getHashPassword())) {
                 session.setAttribute("userId", user.getId());
                 sessionRepository.save(new Session(session.getId(), user.getId()));
-                Cookie cookie = new Cookie("sessionId", session.getId());
+                Cookie cookie = new Cookie(COOKIE_NAME, session.getId());
                 cookie.setMaxAge(10000);
                 return cookie;
             } else {
-                Cookie cookie = new Cookie("sessionId", session.getId());
+                Cookie cookie = new Cookie(COOKIE_NAME, session.getId());
                 cookie.setMaxAge(0);
                 return cookie;
             }
         } else {
-            Cookie cookie = new Cookie("sessionId", session.getId());
+            Cookie cookie = new Cookie(COOKIE_NAME, session.getId());
             cookie.setMaxAge(0);
             return cookie;
         }

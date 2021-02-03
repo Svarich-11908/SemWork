@@ -11,6 +11,10 @@ import java.io.IOException;
 public class HomePageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/html/home.html").forward(req, resp);
+        try {
+            req.getRequestDispatcher("/html/home.html").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            req.getServletContext().log(e.getMessage());
+        }
     }
 }

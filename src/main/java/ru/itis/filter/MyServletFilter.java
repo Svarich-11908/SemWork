@@ -31,30 +31,30 @@ public class MyServletFilter implements Filter {
         HttpSession session = request.getSession();
         Boolean isAuthenticated = false;
         Boolean isRequestOnOpenPage = request.getRequestURI().equals("/login") || request.getRequestURI().equals("/home");
-        Boolean isRequestOnEmptyPage = request.getRequestURI().equals("/");
 
         Cookie[] cookies = request.getCookies();
         Cookie c = null;
+        Optional<User> user = Optional.empty();
         if (cookies != null){
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("sessionId")) {
-                c = cookie;
-                break;
-            }
-        }}
-        if (c != null) {
-            Optional<User> user = userService.getUserBySessionId(c.getValue());
-            if (user.isPresent()) {
-                session.setAttribute("userId", user.get().getId());
-                isAuthenticated = true;
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("sessionId")) {
+                    c = cookie;
+                    user = userService.getUserBySessionId(c.getValue());
+                    break;
+                }
             }
         }
+        if (user.isPresent()) {
+            session.setAttribute("userId", user.get().getId());
+            isAuthenticated = true;
+        }
 
-        if (isRequestOnEmptyPage) {
+        if (request.getRequestURI().equals("/")) {
             response.sendRedirect("/home");
-        } else if (isAuthenticated && !isRequestOnOpenPage || !isAuthenticated && isRequestOnOpenPage) {
+        } else if (Boolean.TRUE.equals(isAuthenticated) && Boolean.FALSE.equals(isRequestOnOpenPage)
+                || Boolean.FALSE.equals(isAuthenticated) && Boolean.TRUE.equals(isRequestOnOpenPage)) {
             filterChain.doFilter(request, response);
-        } else if (isAuthenticated && isRequestOnOpenPage) {
+        } else if (Boolean.TRUE.equals(isAuthenticated)) {
             response.sendRedirect("/user");
         } else {
             response.sendRedirect("/login");
@@ -64,6 +64,6 @@ public class MyServletFilter implements Filter {
 
     @Override
     public void destroy() {
-
+        //when filter is destroyed
     }
 }
